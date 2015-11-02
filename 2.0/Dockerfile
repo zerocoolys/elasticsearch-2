@@ -15,6 +15,8 @@ RUN apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys 46095ACC85485
 ENV ELASTICSEARCH_MAJOR 2.0
 ENV ELASTICSEARCH_VERSION 2.0.0
 ENV ELASTICSEARCH_REPO_BASE http://packages.elasticsearch.org/elasticsearch/2.x/debian
+ENV ES_PLUGIN_KOPF_VERSION 2.0
+ENV ES_PLUGIN_HEAD_VERSION 0.0
 
 RUN echo "deb $ELASTICSEARCH_REPO_BASE stable main" > /etc/apt/sources.list.d/elasticsearch.list
 
@@ -24,6 +26,12 @@ RUN set -x \
 	&& rm -rf /var/lib/apt/lists/*
 
 ENV PATH /usr/share/elasticsearch/bin:$PATH
+ENV ES_HOME /usr/share/elasticsearch
+
+RUN echo ${ES_HOME}
+RUN /usr/share/elasticsearch/bin/plugin -h
+RUN ${ES_HOME}/bin/plugin install lmenezes/elasticsearch-kopf/2.0 
+RUN /usr/share/elasticsearch/bin/plugin install mobz/elasticsearch-head 
 
 RUN set -ex \
 	&& for path in \
